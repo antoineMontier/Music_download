@@ -41,8 +41,18 @@ def press_upper_music():
 def click_share_button():
     subprocess.run(["adb", "shell", "input", "tap", "260", "2220"])
 
+def click_copy_link():
+    subprocess.run(["adb", "shell", "input", "tap", "180", "2270"])
 
-press_upper_music()
-time.sleep(.5)
-click_share_button()
-time.sleep(3)
+## before launching this function, be sure to be inside the spotify loop with random play OFF
+def save_from_playWindow():
+    # click_right_share_button
+    #subprocess.run(["adb", "shell", "input", "tap", "980", "1750"])
+    #time.sleep(3)# wait for share screen to appear
+    #click on copylink button
+    #subprocess.run(["adb", "shell", "input", "tap", "180", "2270"])
+    # get the copied text
+    copied = subprocess.run(["adb", "shell", "dumpsys", "clipboard"], capture_output=True, text=True)
+    print(copied.stdout)
+
+save_from_playWindow()
