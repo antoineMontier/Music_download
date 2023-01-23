@@ -33,8 +33,6 @@ def open_and_get_clipboard():
     linkk = linkk.replace('\"', '').replace('\'', '')
     return linkk
 
-
-
 def open_spotify():
     result = subprocess.run(["adb", "shell", "am", "start", "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER", "-n", "com.spotify.music/.MainActivity"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -48,7 +46,6 @@ def click_on_actual_playing_song():
 
 def click_next_song():
     subprocess.run(["adb", "shell", "input", "tap", '480', '1880'])
-
 
 def enter_likedSongs():
     subprocess.run(["adb", "shell", "input", "tap", '530', '2325'])
@@ -73,7 +70,7 @@ def click_share_button():
 def click_copy_link():
     subprocess.run(["adb", "shell", "input", "tap", "180", "2270"])
 
-## before launching this function, be sure to be inside the spotify loop with random play OFF
+## before launching this function, be sure to be inside the spotify loop (title screen) with random play OFF
 def save_from_playWindow(nb_titles):
     with open("downloaded_titles.txt", "w") as dt:
         for i in range(nb_titles):
@@ -84,7 +81,10 @@ def save_from_playWindow(nb_titles):
             subprocess.run(["adb", "shell", "input", "tap", "180", "2270"])
             # get the copied text
             time.sleep(.5)
-            dt.write(open_and_get_clipboard())
+            link = open_and_get_clipboard()
+            dt.write(link)
+            dt.flush()
+            print("write one", link)
             dt.write("\n")
             time.sleep(.5)
             #re-open spotify
@@ -96,7 +96,3 @@ def save_from_playWindow(nb_titles):
 
 
 save_from_playWindow(3)
-
-#click_on_actual_playing_song()
-#time.sleep(.2)
-#click_next_song()
