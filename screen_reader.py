@@ -34,10 +34,6 @@ def open_and_get_clipboard():
     return linkk
 
 
-# adb shell am broadcast -a clipper.get 
-
-
-
 
 def open_spotify():
     result = subprocess.run(["adb", "shell", "am", "start", "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER", "-n", "com.spotify.music/.MainActivity"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -46,6 +42,13 @@ def open_spotify():
         print("spotify opened successfully")
     else:
         print(result.stderr.decode())
+
+def click_on_actual_playing_song():
+    subprocess.run(["adb", "shell", "input", "tap", '140', '2150'])
+
+def click_next_song():
+    subprocess.run(["adb", "shell", "input", "tap", '480', '1880'])
+
 
 def enter_likedSongs():
     subprocess.run(["adb", "shell", "input", "tap", '530', '2325'])
@@ -71,17 +74,29 @@ def click_copy_link():
     subprocess.run(["adb", "shell", "input", "tap", "180", "2270"])
 
 ## before launching this function, be sure to be inside the spotify loop with random play OFF
-def save_from_playWindow():
-    # click_right_share_button
-    #subprocess.run(["adb", "shell", "input", "tap", "980", "1750"])
-    #time.sleep(3)# wait for share screen to appear
-    #click on copylink button
-    #subprocess.run(["adb", "shell", "input", "tap", "180", "2270"])
-    # get the copied text
-    copied = subprocess.run(["adb", "shell", "dumpsys", "clipboard"], capture_output=True, text=True)
-    print(copied.stdout)
+def save_from_playWindow(nb_titles):
+    with open("downloaded_titles.txt", "w") as dt:
+        for i in range(nb_titles):
+            # click_right_share_button
+            subprocess.run(["adb", "shell", "input", "tap", "980", "1750"])
+            time.sleep(3)# wait for share screen to appear
+            #click on copylink button
+            subprocess.run(["adb", "shell", "input", "tap", "180", "2270"])
+            # get the copied text
+            time.sleep(.5)
+            dt.write(open_and_get_clipboard())
+            dt.write("\n")
+            time.sleep(.5)
+            #re-open spotify
+            open_spotify()
+            time.sleep(.5)
+            click_on_actual_playing_song()
+            time.sleep(.2)
+            click_next_song()
 
-#save_from_playWindow()
-open_and_get_clipboard()
 
+save_from_playWindow(3)
 
+#click_on_actual_playing_song()
+#time.sleep(.2)
+#click_next_song()
