@@ -94,5 +94,20 @@ def save_from_playWindow(nb_titles):
             time.sleep(.2)
             click_next_song()
 
+def download_titles_from(file_in, folder_out_path, log_file):
+    i = 1
+    with open(file_in, 'r') as f:
+        os.chdir(folder_out_path)
+        with open(log_file, 'w') as log:
+            for line in f:
+                res = subprocess.run(['spotdl', 'download', line], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                if("LookupError" in str(res.stdout)):
+                    log.write("error, line : " + str(i) + "  link : " + line )
+                elif("Downloaded" in str(res.stdout)):
+                    log.write("line : " + str(i)+ " success")
+                i = i+1
 
-save_from_playWindow(3)
+
+
+#save_from_playWindow(3)
+download_titles_from("downloaded_titles.txt", "/home/antoine/Prog/python/Music_download/Downloads", "downloads_logs.txt")
