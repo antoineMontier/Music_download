@@ -1,5 +1,10 @@
 import pyautogui, time, os, subprocess, cv2, pyperclip, pytesseract
 
+# using th clipper app on android (it must be opened)
+# adb shell am broadcast -a clipper.get 
+# adb shell am broadcast -a clipper.set -e text 'mytext'
+# start the clipper app : 
+
 def open_wireless_adb():
     ip_adress = str(input("what is the Ip adress or your android device ?"))
     print("connection")
@@ -11,6 +16,27 @@ def open_wireless_adb():
         exit()
 
     print("entering adb shell, type 'exit' to exit")
+
+def open_and_get_clipboard():
+    # open the app in background
+    result = subprocess.run(["adb", "shell", "am", "startservice", "ca.zgrs.clipper/.ClipboardService"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # open the app in the foreground
+    result = subprocess.run(["adb", "shell", "monkey", "-p", "ca.zgrs.clipper", "-c", "android.intent.category.LAUNCHER", "1"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    #print(result.stdout)
+    # get the clipboard
+    result = subprocess.run(["adb", "shell", "am", "broadcast", "-a", "clipper.get"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    #print(result.stdout)
+    output_list = result.stdout.split(b'data=')
+    link = output_list[1].strip()
+    linkk = str(link)
+    linkk = linkk[1:]
+    linkk = linkk.replace('\"', '').replace('\'', '')
+    return linkk
+
+
+# adb shell am broadcast -a clipper.get 
+
+
 
 
 def open_spotify():
@@ -55,4 +81,7 @@ def save_from_playWindow():
     copied = subprocess.run(["adb", "shell", "dumpsys", "clipboard"], capture_output=True, text=True)
     print(copied.stdout)
 
-save_from_playWindow()
+#save_from_playWindow()
+open_and_get_clipboard()
+
+
