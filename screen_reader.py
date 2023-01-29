@@ -27,11 +27,13 @@ def open_and_get_clipboard():
     result = subprocess.run(["adb", "shell", "am", "broadcast", "-a", "clipper.get"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     #print(result.stdout)
     output_list = result.stdout.split(b'data=')
-    link = output_list[1].strip()
-    linkk = str(link)
-    linkk = linkk[1:]
-    linkk = linkk.replace('\"', '').replace('\'', '')
-    return linkk
+    if(output_list.__len__() > 1):
+        link = output_list[1].strip()
+        linkk = str(link)
+        linkk = linkk[1:]
+        linkk = linkk.replace('\"', '').replace('\'', '')
+        return linkk
+    return "-"
 
 def open_spotify():
     result = subprocess.run(["adb", "shell", "am", "start", "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER", "-n", "com.spotify.music/.MainActivity"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -72,27 +74,29 @@ def click_copy_link():
 
 ## before launching this function, be sure to be inside the spotify loop (title screen) with random play OFF
 def save_from_playWindow(nb_titles):
-    with open("downloaded_titles.txt", "w") as dt:
+    i = 1
+    with open("downloaded_titles.txt", "a") as dt:
         for i in range(nb_titles):
             # click_right_share_button
             subprocess.run(["adb", "shell", "input", "tap", "980", "1750"])
-            time.sleep(3)# wait for share screen to appear
+            time.sleep(5)# wait for share screen to appear
             #click on copylink button
             subprocess.run(["adb", "shell", "input", "tap", "180", "2270"])
             # get the copied text
-            time.sleep(.5)
+            time.sleep(1.5)
             link = open_and_get_clipboard()
             dt.write(link)
             dt.flush()
-            print("write one", link)
+            print("write ", link, " \tit =", i)
             dt.write("\n")
-            time.sleep(.5)
+            time.sleep(1.5)
             #re-open spotify
             open_spotify()
-            time.sleep(.5)
+            time.sleep(3)
             click_on_actual_playing_song()
-            time.sleep(.2)
+            time.sleep(1.5)
             click_next_song()
+            i = i+1
 
 def download_titles_from(file_in, folder_out_path, log_file):
     i = 1
@@ -109,5 +113,5 @@ def download_titles_from(file_in, folder_out_path, log_file):
 
 
 
-#save_from_playWindow(3)
-download_titles_from("downloaded_titles.txt", "/home/antoine/Prog/python/Music_download/Downloads", "downloads_logs.txt")
+save_from_playWindow(200)
+#download_titles_from("downloaded_titles.txt", "/home/antoine/Prog/python/Music_download/Downloads", "downloads_logs.txt")
