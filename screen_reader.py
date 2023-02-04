@@ -104,6 +104,10 @@ def download_titles_from(file_in, folder_out_path, log_file):
         os.chdir(folder_out_path)
         with open(log_file, 'w') as log:
             for line in f:
+                if line.empty():
+                    log.write("empty")
+                if not line.empty() and line[0] == "-":
+                    log.write("empty")
                 res = subprocess.run(['spotdl', 'download', line], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 if("LookupError" in str(res.stdout)):
                     log.write("error, line : " + str(i) + "  link : " + line )
@@ -113,5 +117,5 @@ def download_titles_from(file_in, folder_out_path, log_file):
 
 
 
-save_from_playWindow(200)
-#download_titles_from("downloaded_titles.txt", "/home/antoine/Prog/python/Music_download/Downloads", "downloads_logs.txt")
+#save_from_playWindow(200)
+download_titles_from("downloaded_titles.txt", "/home/antoine/Prog/python/Music_download/Downloads", "downloads_logs.txt")
