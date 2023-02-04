@@ -104,15 +104,17 @@ def download_titles_from(file_in, folder_out_path, log_file):
         os.chdir(folder_out_path)
         with open(log_file, 'w') as log:
             for line in f:
-                if line.empty():
-                    log.write("empty")
-                if not line.empty() and line[0] == "-":
-                    log.write("empty")
-                res = subprocess.run(['spotdl', 'download', line], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                if("LookupError" in str(res.stdout)):
-                    log.write("error, line : " + str(i) + "  link : " + line )
-                elif("Downloaded" in str(res.stdout)):
-                    log.write("line : " + str(i)+ " success")
+                if len(line) == 0:
+                    log.write("empty\n")
+                elif  len(line)!=0 and line[0] == "-":
+                    log.write("empty\n")
+                else:
+                    res = subprocess.run(['spotdl', 'download', line], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    if("LookupError" in str(res.stdout)):
+                        log.write("error, line : " + str(i) + "  link : " + line + "\n")
+                    elif("Downloaded" in str(res.stdout)):
+                        log.write("line : " + str(i)+ " success\n")
+                log.flush()
                 i = i+1
 
 
