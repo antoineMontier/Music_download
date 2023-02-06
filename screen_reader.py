@@ -120,4 +120,7 @@ def download_titles_from(file_in, folder_out_path, log_file):
 
 
 #save_from_playWindow(200)
-download_titles_from("downloaded_titles.txt", "/home/antoine/Prog/python/Music_download/Downloads", "downloads_logs.txt")
+#download_titles_from("downloaded_titles.txt", "/home/antoine/Prog/python/Music_download/Downloads", "downloads_logs.txt")
+
+
+# phone music path : /sdcard/Music
